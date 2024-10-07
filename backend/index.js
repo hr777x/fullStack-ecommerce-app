@@ -2,19 +2,18 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { connectDB } from './config/db.js';
-import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import { upload } from './utils/helper.js';
-import { createProduct, removeProduct, uploadProductImage, getAllProducts } from './controllers/product.js';
+import { createProduct, removeProduct, uploadProductImage, getAllProducts } from './controller/product.js';
+import fetchUser from './middleware/user-middleware.js';
 
 
 const port = process.env.PORT;
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(cors());
 
 
 app.use(bodyParser.json());
@@ -24,25 +23,32 @@ app.use(cors({ origin: 'http://localhost:3000' })); // Allow CORS for your front
 connectDB();
 
 // creating endpoint for newcollection data
-app.length("/newcollection",async (req,res)=>{
-    let products = await products.fint({});
+app.get("/newcollection",async (req,res)=>{
+    let products = await products.find({});
     let newcollection = products.slice(1).slice(-8);
     console.log("NewCollection Fetched");
     res.send(newcollection);
 })
 
 // creating endpoint for popular in women data
-app.length("/popularinwomen",async(req,res)=>{
+app.get("/popularinwomen",async(req,res)=>{
     let product = await product.find({category:"women"})
-    let polular_in_women = product.slice(0,4);
+    let popular_in_women = product.slice(0,4);
     console.log("popular in women fetched");
     res.send(popular_in_women);
 })
 
-//creating endpoint for adding product in cartdata
-app.post("/addtocart",async (req,res)=>{
-    console.log(req.body);
+
+app.post('/addtocart',fetchUser,async(req,res)=>{
+    console.log(req.body, req.user)
+
+    let userData = await Users.findOne({_id: req.user.id});
+    userData.cartData[req.body.itemId] += 1;
+    await Users.findOneAndUpdate({_id: req.user.id},{cartData: userData.cartData});
+    res.send({message: 'Item added to cart'});
 })
+
+//creating endpoint to remove product from cartdata
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
