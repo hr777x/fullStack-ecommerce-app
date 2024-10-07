@@ -83,3 +83,18 @@ export const getAllProducts = async (req, res) => {
     res.send(products);
 };
 
+export const getNewCollection = async (req, res) => {
+    let products = await Product.find({});
+    let newcollection = products.slice(1).slice(-8);
+    console.log("NewCollection Fetched");
+    res.send(newcollection);
+
+};
+
+export const getPopularInWomen = async(req,res)=> {
+    let product = await Product.find({category:"women"})
+    let popular_in_women = product.slice(0,4);
+    console.log("popular in women fetched");
+    res.send(popular_in_women);
+};
+

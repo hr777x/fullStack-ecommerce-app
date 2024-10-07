@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 
 // shema for creating user
-const userSchema = mongoose.model({
+const userSchema = mongoose.Schema({
     name: {
         type: String
     },
@@ -22,4 +22,4 @@ const userSchema = mongoose.model({
     }
 });
 
-export default mongoose.model('user', userSchema)
+export default mongoose.model('User', userSchema)

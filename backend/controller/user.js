@@ -1,6 +1,7 @@
-import User from "../models/user-model";
+import User from "../models/user-model.js";
+import jwt from "jsonwebtoken";
 
-app.post("/signup", async (req, res) => {
+export const signUp = async (req, res) => {
   let check = await User.findOne({ email: req.body.email });
   if (check) {
     return res.status(400).json({ success: false, errors: "existin" });
@@ -17,6 +18,7 @@ app.post("/signup", async (req, res) => {
     date: Date.now(),
   });
 
+
   await user.save();
 
   const data = {
@@ -27,7 +29,7 @@ app.post("/signup", async (req, res) => {
 
   const token = jwt.sign(data, JWT_SECRET);
   res.json({ success: true, token });
-});
+};
 
 // crate user endpoint for login
   export const login = async (req, res) => {
@@ -50,6 +52,13 @@ app.post("/signup", async (req, res) => {
   }
 };
 
+export const addToCart = async(req,res)=>{
+  console.log(req.body, req.user)
 
+  let userData = await User.findOne({_id: req.user.id});
+  userData.cartData[req.body.itemId] += 1;
+  await User.findOneAndUpdate({_id: req.user.id},{cartData: userData.cartData});
+  res.send({message: 'Item added to cart'});
+}
 
 
