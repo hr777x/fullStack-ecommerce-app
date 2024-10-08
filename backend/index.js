@@ -7,8 +7,8 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import { upload } from './utils/helper.js';
 import { createProduct, removeProduct, uploadProductImage, getAllProducts, getNewCollection, getPopularInWomen } from './controller/product.js';
-import fetchUser from './middleware/user-middleware.js';
-import { addToCart, signUp } from './controller/user.js';
+import { authMiddleware } from './middleware/user-middleware.js';
+import { addToCart, getCart, removeFromCart, signUp } from './controller/user.js';
 
 
 const port = process.env.PORT;
@@ -46,8 +46,11 @@ app.get("/newcollection", getNewCollection);
 // creating endpoint for popular in women data
 app.get("/popularinwomen", getPopularInWomen);
 
-app.post("/signup", signUp);
+app.post("/signUp", signUp);
 
-app.post('/addtocart',fetchUser, addToCart);
+app.post('/addtocart', authMiddleware, addToCart);
 
 //creating endpoint to remove product from cartdata
+app.post("/removefromcart", authMiddleware, removeFromCart);
+
+app.post("/getcart", authMiddleware, getCart);
