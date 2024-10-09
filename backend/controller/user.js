@@ -113,6 +113,6 @@ export const removeFromCart = async (req,res)=>{
 //creating end_point for getting cartdata
 export const getCart = async (req,res)=>{
 console.log("Get Cart");
-let userData = await Users.findOne({_id:req.user.id});
+let userData = await User.findOne({_id:req.user.id});
 res.json(userData.cartData);
 };

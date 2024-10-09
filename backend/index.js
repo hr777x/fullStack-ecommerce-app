@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 import { upload } from './utils/helper.js';
 import { createProduct, removeProduct, uploadProductImage, getAllProducts, getNewCollection, getPopularInWomen } from './controller/product.js';
 import { authMiddleware } from './middleware/user-middleware.js';
-import { addToCart, getCart, removeFromCart, signUp } from './controller/user.js';
+import { addToCart, getCart, login, removeFromCart, signUp } from './controller/user.js';
 
 
 const port = process.env.PORT;
@@ -19,20 +19,22 @@ app.use(express.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use(cors({ origin: '*' })); // Allow CORS for your frontend
 connectDB();
+
+// Serve static images from the uploads directory
+app.use('/uploads/Images', express.static('uploads/Images'));
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
+
 app.get('/', (req, res) => {
     res.send('Express App is Running');
 });
 
-// Serve static images from the uploads directory
-app.use('/images', express.static('uploads/images'));
+
 
 // File upload route
 app.post('/uploads', upload.single('product'), uploadProductImage);  // Handles image upload
@@ -47,6 +49,8 @@ app.get("/newcollection", getNewCollection);
 app.get("/popularinwomen", getPopularInWomen);
 
 app.post("/signUp", signUp);
+
+app.post('/login', login);
 
 app.post('/addtocart', authMiddleware, addToCart);
 

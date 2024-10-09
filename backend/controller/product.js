@@ -40,8 +40,8 @@ export const uploadProductImage = async (req, res) => {
             return res.status(400).json({ success: false, message: 'No file uploaded' });
         }
 
-        // Assuming you're storing files in a folder named 'images'
-        const imageUrl = `http://${req.headers.host}/uploads/${req.file.filename}`;
+        // Correcting the file path to 'uploads/Images'
+        const imageUrl = `http://${req.headers.host}/uploads/Images/${req.file.filename}`;
 
         res.json({
             success: true, // Change success to true
